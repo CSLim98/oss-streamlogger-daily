@@ -78,14 +78,25 @@ S3StreamLogger.prototype._upload = function(forceNewFile) {
     this.unwritten = 0;
 
     var elapsed = (new Date()).getTime() - this.file_started.getTime();
-    if( forceNewFile || 
-        elapsed > this.rotate_every || 
+    var fileStartedDay = (new Date(this.file_started).getDate());
+
+    if (typeof this.rotate_every === 'string' && this.rotate_every === 'day') {
+      if( forceNewFile ||
+          fileStartedDay !== new Date().getDate() ||
+          buffer.length > this.max_file_size){
+
+          this._newFile();
+      }
+    } else if (typeof this.rotate_every === 'number') {
+      if( forceNewFile ||
+        elapsed > this.rotate_every ||
         buffer.length > this.max_file_size){
 
         this._newFile();
+      }
     }
 
-    // do everything else before calling putObject to avoid the 
+    // do everything else before calling putObject to avoid the
     // possibility that this._write is called again, losing data.
     this.s3.putObject(param, function(err){
         if(err){
@@ -149,4 +160,3 @@ S3StreamLogger.prototype._write = function(chunk, encoding, cb){
 module.exports = {
     S3StreamLogger: S3StreamLogger
 };
-
