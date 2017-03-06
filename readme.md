@@ -1,4 +1,4 @@
-## s3-streamlogger
+## s3-streamlogger-daily
 [![npm version](https://badge.fury.io/js/s3-streamlogger-daily.svg)](https://badge.fury.io/js/s3-streamlogger-daily)
 
 
