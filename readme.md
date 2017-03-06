@@ -10,7 +10,7 @@ files produced by s3-streamlogger.
 
 ### Installation
 ```bash
-npm install --save s3-streamlogger
+npm install --save s3-streamlogger-daily
 ```
 
 ### Basic Usage
