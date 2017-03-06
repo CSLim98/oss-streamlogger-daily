@@ -45,7 +45,37 @@ function S3StreamLogger(options){
     this.buffers      = [];
     this.unwritten    = 0;
 
-    this._newFile();
+    // If using daily rotation, we need to check if the file already exists (eg was created by a different process)
+    if (typeof this.rotate_every === 'string' && this.rotate_every === 'day') {
+
+      this.file_started = new Date();
+      var date_as_utc = new Date(
+          this.file_started.getUTCFullYear(),
+          this.file_started.getUTCMonth(),
+          this.file_started.getUTCDate(),
+          this.file_started.getUTCHours(),
+          this.file_started.getUTCMinutes(),
+          this.file_started.getUTCSeconds(),
+          this.file_started.getUTCMilliseconds()
+      );
+      this.object_name  =  (this.folder === '' ? '' : this.folder + '/') + strftime(this.name_format, date_as_utc);
+
+      // Scoping like this really makes things inflexible
+      var _this = this;
+
+      this.s3.getObject({ Bucket: this.bucket, Key: this.object_name }, function(err, data) {
+
+        // Error will return 404 if the object doesn't exist
+        if (!err) {
+          // If the file already exists, add it to memory
+          _this.buffers = [data.Body];
+          _this._newFile(true);
+        }
+      })
+    } else {
+      this._newFile();
+    }
+
 }
 util.inherits(S3StreamLogger, stream.Writable);
 
@@ -86,6 +116,7 @@ S3StreamLogger.prototype._upload = function(forceNewFile) {
           buffer.length > this.max_file_size){
 
           this._newFile();
+
       }
     } else if (typeof this.rotate_every === 'number') {
       if( forceNewFile ||
@@ -107,8 +138,11 @@ S3StreamLogger.prototype._upload = function(forceNewFile) {
 
 // _newFile should ONLY be called when there is no un-uploaded data (i.e.
 // from _upload or initialization), otherwise data will be lost.
-S3StreamLogger.prototype._newFile = function(){
-    this.buffers      = [];
+S3StreamLogger.prototype._newFile = function(doNotResetBuffer){
+
+    if (!doNotResetBuffer) {
+      this.buffers = [];
+    }
     this.file_started = new Date();
     this.last_write   = this.file_started;
     // create a date object with the UTC version of the date to use with
@@ -125,6 +159,7 @@ S3StreamLogger.prototype._newFile = function(){
         this.file_started.getUTCMilliseconds()
     );
     this.object_name  =  (this.folder === '' ? '' : this.folder + '/') + strftime(this.name_format, date_as_utc);
+
 };
 
 S3StreamLogger.prototype._write = function(chunk, encoding, cb){
