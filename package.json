@@ -1,5 +1,5 @@
 {
-  "name": "s3-streamlogger",
+  "name": "s3-streamlogger-daily",
   "version": "0.6.0",
   "description": "Stream for logging to s3 with rotated object names. Usable as a wiston-file stream. This fork supports daily logging.",
   "main": "index.js",
