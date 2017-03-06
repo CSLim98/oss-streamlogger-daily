@@ -1,5 +1,5 @@
 ## s3-streamlogger
-[![NPM version](https://badge.fury.io/js/s3-streamlogger.svg)](http://badge.fury.io/js/s3-streamlogger)
+[![npm version](https://badge.fury.io/js/s3-streamlogger-daily.svg)](https://badge.fury.io/js/s3-streamlogger-daily)
 
 
 A Writable Stream object that uploads to s3 objects, periodically rotating to a
@@ -15,7 +15,7 @@ npm install --save s3-streamlogger-daily
 
 ### Basic Usage
 ```js
-var S3StreamLogger = require('s3-streamlogger').S3StreamLogger;
+var S3StreamLogger = require('s3-streamlogger-daily').S3StreamLogger;
 
 var s3stream = new S3StreamLogger({
              bucket: "mys3bucket",
@@ -34,7 +34,7 @@ npm install --save s3-streamlogger
 
 ```js
 var winston        = require('winston');
-var S3StreamLogger = require('s3-streamlogger').S3StreamLogger;
+var S3StreamLogger = require('s3-streamlogger-daily').S3StreamLogger;
 
 var s3_stream = new S3StreamLogger({
              bucket: "mys3bucket",
@@ -55,7 +55,7 @@ logger.info('Hello Winston!');
 
 ### Define subfolder
 ```js
-var S3StreamLogger = require('s3-streamlogger').S3StreamLogger;
+var S3StreamLogger = require('s3-streamlogger-daily').S3StreamLogger;
 
 var s3stream = new S3StreamLogger({
              bucket: "mys3bucket",
