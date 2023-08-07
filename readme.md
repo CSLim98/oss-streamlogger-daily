@@ -1,5 +1,5 @@
-## s3-streamlogger-daily
-[![npm version](https://badge.fury.io/js/s3-streamlogger-daily.svg)](https://badge.fury.io/js/s3-streamlogger-daily)
+## oss-streamlogger
+[![npm version](https://badge.fury.io/js/oss-streamlogger.svg)](https://badge.fury.io/js/oss-streamlogger)
 
 
 A Writable Stream object that uploads to s3 objects, periodically rotating to a
@@ -10,33 +10,33 @@ files produced by s3-streamlogger.
 
 ### Installation
 ```bash
-npm install --save s3-streamlogger-daily
+npm install oss-streamlogger
 ```
 
 ### Basic Usage
 ```js
-var S3StreamLogger = require('s3-streamlogger-daily').S3StreamLogger;
+var OssStreamLogger = require('oss-streamlogger').OssStreamLogger;
 
-var s3stream = new S3StreamLogger({
+var oss_stream = new OssStreamLogger({
              bucket: "mys3bucket",
       access_key_id: "...",
   secret_access_key: "..."
 });
 
-s3stream.write("hello S3");
+oss_stream.write("hello S3");
 ```
 
 ### Use with Winston: Log to S3
 ```sh
 npm install --save winston
-npm install --save s3-streamlogger
+npm install --save oss-streamlogger
 ```
 
 ```js
 var winston        = require('winston');
-var S3StreamLogger = require('s3-streamlogger-daily').S3StreamLogger;
+var OssStreamLogger = require('oss-streamlogger').OssStreamLogger;
 
-var s3_stream = new S3StreamLogger({
+var oss_stream = new OssStreamLogger({
              bucket: "mys3bucket",
       access_key_id: "...",
   secret_access_key: "..."
@@ -45,7 +45,7 @@ var s3_stream = new S3StreamLogger({
 var logger = new (winston.Logger)({
   transports: [
     new (winston.transports.File)({
-      stream: s3_stream
+      stream: oss_stream
     })
   ]
 });
@@ -55,16 +55,16 @@ logger.info('Hello Winston!');
 
 ### Define subfolder
 ```js
-var S3StreamLogger = require('s3-streamlogger-daily').S3StreamLogger;
+var OssStreamLogger = require('s3-streamlogger-daily').OssStreamLogger;
 
-var s3stream = new S3StreamLogger({
+var oss_stream = new OssStreamLogger({
              bucket: "mys3bucket",
              folder: "my/nested/subfolder",
       access_key_id: "...",
   secret_access_key: "..."
 });
 
-s3stream.write("hello S3");
+oss_stream.write("hello S3");
 ```
 
 ### Add hostname information for tails3
@@ -88,7 +88,7 @@ Note that these errors will result in uncaught exceptions unless you have an
 `error` event handler registered, for example:
 
 ```js
-s3_stream.on('error', function(err){
+oss_stream.on('error', function(err){
     // there was an error!
     some_other_logging_transport.log('error', 'logging transport error', err)
 });
@@ -97,37 +97,32 @@ s3_stream.on('error', function(err){
 ### Options
 
 #### bucket *(required)*
-Name of the S3 bucket to upload data to. Must exist.
+Name of the oss bucket to upload data to. Must exist.
 Can also be provided as the environment variable `BUCKET_NAME`.
+
+#### endpoint *(required)*
+OSS endpoint must be following the region of the bucket. The full list of options is available on the [OSS Regions and endpoints page](https://www.alibabacloud.com/help/en/oss/user-guide/regions-and-endpoints).
+
+#### access_key_id *(required)*
+OSS access key ID, must have put permission on the specified bucket.
+
+#### secret_access_key *(required)*
+OSS secret key for the `access_key_id` specified.
+
+#### config
+
+Configuration object for the OSS SDK. The full list of options is available on the [OSS Parameters page](https://www.alibabacloud.com/help/en/oss/developer-reference/parameters). This is an alternative to using access_key_id and secret_access_key and is overwritten by them if both are used.
 
 #### folder
 An optional folder to stream log files to. Takes a path string,
 eg: "my/subfolder" or "nested".
-
-#### access_key_id
-AWS access key ID, must have putObject permission on the specified bucket.  Can
-also be provided as the environment variable `AWS_SECRET_ACCESS_KEY`, or as any
-of the other [authentication
-methods](http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html)
-supported by the AWS SDK.
-
-#### secret_access_key
-AWS secret key for the `access_key_id` specified.  Can also be provided as the
-environment variable `AWS_SECRET_KEY_ID`, or as any of the other
-[authentication
-methods](http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html)
-supported by the AWS SDK.
-
-#### config
-
-Configuration object for the AWS SDK. The full list of options is available on the [AWS SDK Configuration Object page](http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html). This is an alternative to using access_key_id and secret_access_key and is overwritten by them if both are used.
 
 #### name_format
 Format of file names to create, accepts [strftime specifiers](https://github.com/samsonjs/strftime). Defaults to `"%Y-%m-%d-%H-%M-%S-%L-unknown-unknown.log"`. The Date() used to fill the format specifiers is created with the current UTC time, but still *has the current timezone*, so any specifiers that perform timezone conversion will return incorrect dates.
 
 If you use a format of the form `%Y-%m-%d-%H-%M-<stage>-<hostname>.log`, then
 you can use [tails3](http://github.com/coggle/tails3) to tail the log files
-being generated by `S3StreamLogger`.
+being generated by `OssStreamLogger`.
 
 #### rotate_every
 Files will be rotated every `rotate_every` milliseconds. Defaults to 3600000 (60
@@ -145,10 +140,6 @@ seconds.
 #### buffer_size
 Files will be uploaded if the un-uploaded data exceeds `buffer_size` bytes.
 Defaults to 10 KB.
-
-#### server_side_encryption
-The server side encryption `AES256` algorithm used when storing objects in S3.
-Defaults to false.
 
 
 ### License
