@@ -1,28 +1,29 @@
 {
-  "name": "s3-streamlogger-daily",
-  "version": "0.6.0",
-  "description": "Stream for logging to s3 with rotated object names. Usable as a wiston-file stream. This fork supports daily logging.",
+  "name": "oss-streamlogger-daily",
+  "version": "1.0.1",
+  "description": "Stream for logging to alicloud oss with rotated object names. Usable as a wiston-file stream. This fork supports daily logging.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: No test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/isaachinman/s3-streamlogger.git"
+    "url": "git+https://github.com/CSLim98/oss-streamlogger-daily.git"
   },
   "keywords": [
     "winston",
     "logging",
-    "s3"
+    "oss"
   ],
-  "author": "Isaac Hinman <isaac@isaachinman.com> (github.com/isaachinman)",
+  "author": "Christopher Lim <limcs4998@gmail.com> (https://github.com/CSLim98)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/isaachinman/s3-streamlogger/issues"
+    "url": "https://github.com/CSLim98/oss-streamlogger-daily/issues"
   },
-  "homepage": "https://github.com/isaachinman/s3-streamlogger",
+  "homepage": "https://github.com/CSLim98/oss-streamlogger-daily",
   "dependencies": {
-    "aws-sdk": "^2.1.16",
+    "ali-oss": "^6.18.0",
     "strftime": "~0.8.2"
-  }
+  },
+  "devDependencies": {}
 }
