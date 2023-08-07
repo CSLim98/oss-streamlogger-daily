@@ -1,6 +1,6 @@
 {
   "name": "oss-streamlogger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Stream for logging to alicloud oss with rotated object names. Usable as a wiston-file stream. This fork supports daily logging.",
   "main": "index.js",
   "scripts": {
